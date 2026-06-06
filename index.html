@@ -2,71 +2,190 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
   <title>SaaS管理画面デモ</title>
   <meta name="description" content="売上管理、顧客管理、予約管理を操作できるSaaS管理画面デモ。">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="app.js"></script>
+  <link href="styles.css" rel="stylesheet">
+  <script src="app.js" defer></script>
 </head>
 <body>
   <div class="app">
     <aside>
-      <div class="brand"><strong>BizOps Desk</strong><span>SaaS管理画面デモ</span></div>
-      <nav class="side-nav" aria-label="管理メニュー">
-        <button aria-selected="true" data-tab="overview">概要</button>
-        <button aria-selected="false" data-tab="sales">売上管理</button>
-        <button aria-selected="false" data-tab="customers">顧客管理</button>
-        <button aria-selected="false" data-tab="booking">予約管理</button>
+      <div class="brand">
+        <strong>BizOps Desk</strong>
+        <span>SaaS管理画面デモ</span>
+      </div>
+      <nav aria-label="管理メニュー" class="side-nav">
+        <button data-tab="overview" aria-selected="true">概要</button>
+        <button data-tab="sales" aria-selected="false">売上管理</button>
+        <button data-tab="customers" aria-selected="false">顧客管理</button>
+        <button data-tab="booking" aria-selected="false">予約管理</button>
       </nav>
       <div class="side-foot">入力内容はブラウザに保存されます。リセットで初期データに戻せます。</div>
     </aside>
 
     <main>
       <div class="topbar">
-        <div><h1 id="pageTitle">運営状況</h1><p>売上、顧客、予約を同じ画面で管理できます。</p></div>
-        <div class="actions"><button class="btn" id="exportCsv">CSV出力</button><button class="btn" id="resetDemo">初期化</button><button class="btn primary" id="refreshBtn">集計更新</button></div>
+        <div>
+          <h1 id="pageTitle">運営状況</h1>
+          <p>売上、顧客、予約を同じ画面で管理できます。</p>
+        </div>
+        <div class="actions">
+          <button id="exportCsv" class="btn">CSV出力</button>
+          <button class="btn" id="resetDemo">初期化</button>
+          <button class="btn primary" id="refreshBtn">集計更新</button>
+        </div>
       </div>
 
-      <div class="filters" aria-label="表示条件">
-        <input id="search" type="search" placeholder="顧客名、予約、担当者で検索">
-        <select id="statusFilter"><option value="all">全ステータス</option><option>継続中</option><option>確認中</option><option>要対応</option></select>
-        <select id="location"><option>全店舗</option><option>東京店</option><option>横浜店</option><option>大阪店</option></select>
+      <div aria-label="表示条件" class="filters">
+        <input id="search" placeholder="顧客名、予約、担当者で検索" type="search">
+        <select id="statusFilter">
+          <option value="all">全ステータス</option>
+          <option>継続中</option>
+          <option>確認中</option>
+          <option>要対応</option>
+        </select>
+        <select id="location">
+          <option>全店舗</option>
+          <option>東京店</option>
+          <option>横浜店</option>
+          <option>大阪店</option>
+        </select>
       </div>
 
-      <section class="metrics" aria-label="主要指標">
-        <article class="metric"><span>月額売上</span><strong id="revenue">-</strong><div class="delta">契約中顧客から計算</div></article>
-        <article class="metric"><span>有効顧客</span><strong id="customersMetric">-</strong><div class="delta">継続中ステータス</div></article>
-        <article class="metric"><span>予約数</span><strong id="bookingsMetric">-</strong><div class="delta warn">未確認を含む</div></article>
-        <article class="metric"><span>解約リスク</span><strong id="riskMetric">-</strong><div class="delta warn">要対応の顧客</div></article>
+      <section aria-label="主要指標" class="metrics">
+        <article class="metric">
+          <span>月額売上</span>
+          <strong id="revenue">-</strong>
+          <div class="delta">契約中顧客から計算</div>
+        </article>
+        <article class="metric">
+          <span>有効顧客</span>
+          <strong id="customersMetric">-</strong>
+          <div class="delta">継続中ステータス</div>
+        </article>
+        <article class="metric">
+          <span>予約数</span>
+          <strong id="bookingsMetric">-</strong>
+          <div class="delta warn">未確認を含む</div>
+        </article>
+        <article class="metric">
+          <span>解約リスク</span>
+          <strong id="riskMetric">-</strong>
+          <div class="delta warn">要対応の顧客</div>
+        </article>
       </section>
 
       <div class="grid">
         <section class="panel wide" aria-labelledby="salesTitle">
-          <div class="panel-head"><div><h2 id="salesTitle">売上推移</h2><small>月別デモデータ</small></div><button class="btn" id="toggleChart">表示切替</button></div>
-          <div class="chart" id="chart" aria-label="売上棒グラフ"></div>
-          <div class="table-wrap"><table><thead><tr><th>顧客</th><th>契約</th><th>月額</th><th>状態</th><th>担当</th><th>次の対応</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+          <div class="panel-head">
+            <div>
+              <h2 id="salesTitle">売上推移</h2>
+              <small>月別デモデータ</small>
+            </div>
+            <button id="toggleChart" class="btn">表示切替</button>
+          </div>
+
+          <div id="chart" class="chart" aria-label="売上棒グラフ"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>顧客</th>
+                  <th>契約</th>
+                  <th>月額</th>
+                  <th>状態</th>
+                  <th>担当</th>
+                  <th>次の対応</th>
+                </tr>
+              </thead>
+              <tbody id="customerRows"></tbody>
+            </table>
+          </div>
         </section>
 
-        <section class="panel" aria-labelledby="addCustomerTitle">
-          <div class="panel-head"><div><h2 id="addCustomerTitle">顧客追加</h2><small>localStorageへ保存</small></div></div>
-          <form class="panel-form" id="customerForm">
-            <label>顧客名<input name="name" required placeholder="サンプル顧客 E"></label>
-            <div class="two"><label>契約<select name="plan"><option>Starter</option><option>Standard</option><option>Pro</option><option>Enterprise</option></select></label><label>月額<input name="monthly" type="number" min="0" step="1000" required value="50000"></label></div>
-            <div class="two"><label>状態<select name="status"><option>継続中</option><option>確認中</option><option>要対応</option></select></label><label>担当<input name="owner" required placeholder="田中"></label></div>
-            <label>次の対応<input name="nextAction" required placeholder="月次レビュー"></label>
-            <button class="btn primary" type="submit">顧客を追加</button>
+        <section aria-labelledby="addCustomerTitle" class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="addCustomerTitle">顧客追加</h2>
+              <small>localStorageへ保存</small>
+            </div>
+          </div>
+          <form id="customerForm" class="panel-form">
+            <label>
+              顧客名
+              <input name="name" placeholder="サンプル顧客 E" required>
+            </label>
+            <div class="two">
+              <label>
+                契約
+                <select name="plan">
+                  <option>Starter</option>
+                  <option>Standard</option>
+                  <option>Pro</option>
+                  <option>Enterprise</option>
+                </select>
+              </label>
+              <label>
+                月額
+                <input type="number" name="monthly" min="0" step="1000" required value="50000">
+              </label>
+            </div>
+            <div class="two">
+              <label>
+                状態
+                <select name="status">
+                  <option>継続中</option>
+                  <option>確認中</option>
+                  <option>要対応</option>
+                </select>
+              </label>
+              <label>
+                担当
+                <input name="owner" placeholder="田中" required>
+              </label>
+            </div>
+            <label>
+              次の対応
+              <input name="nextAction" required placeholder="月次レビュー">
+            </label>
+            <button type="submit" class="btn primary">顧客を追加</button>
           </form>
         </section>
 
-        <section class="panel" aria-labelledby="bookingTitle">
-          <div class="panel-head"><div><h2 id="bookingTitle">予約管理</h2><small>追加・確認済み更新</small></div></div>
+        <section aria-labelledby="bookingTitle" class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="bookingTitle">予約管理</h2>
+              <small>追加・確認済み更新</small>
+            </div>
+          </div>
           <form class="panel-form" id="bookingForm">
-            <div class="two"><label>日時<input name="time" required placeholder="15:30"></label><label>担当<input name="owner" required placeholder="佐藤"></label></div>
-            <label>内容<input name="title" required placeholder="導入相談"></label>
-            <label>種別<select name="type"><option>新規相談</option><option>既存顧客</option><option>導入サポート</option></select></label>
+            <div class="two">
+              <label>
+                日時
+                <input name="time" placeholder="15:30" required>
+              </label>
+              <label>
+                担当
+                <input required name="owner" placeholder="佐藤">
+              </label>
+            </div>
+            <label>
+              内容
+              <input name="title" required placeholder="導入相談">
+            </label>
+            <label>
+              種別
+              <select name="type">
+                <option>新規相談</option>
+                <option>既存顧客</option>
+                <option>導入サポート</option>
+              </select>
+            </label>
             <button class="btn primary" type="submit">予約を追加</button>
           </form>
-          <div class="reservation-list" id="reservationList"></div>
+          <div id="reservationList" class="reservation-list"></div>
         </section>
       </div>
     </main>
